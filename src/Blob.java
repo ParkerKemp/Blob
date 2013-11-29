@@ -22,34 +22,15 @@ public class Blob {
 	
 	public static void draw(){
 
+		//Board.draw();
 		
-		drawBoard();
+		drawPieces();
 		
 		Display.update();
 	}
-	
-	public static void drawBoard(){
+
+	public static void drawPieces(){
 		
-		glDisable(GL_SCISSOR_TEST);
-		
-		glClearColor(0f, 0f, 0f, 1);
-		glClear(GL_COLOR_BUFFER_BIT);
-		
-		glEnable(GL_SCISSOR_TEST);
-		
-		glClearColor(.9f, .9f, .9f, 1);
-		glClear(GL_COLOR_BUFFER_BIT);
-		
-		glColor4f(0, 0, 0, 1);
-		glBegin(GL_LINES);
-		
-		for(int a = 0; a < 10; a++){
-			glVertex2f(85, a * 70 + 85);
-			glVertex2f(715, a * 70 + 85);
-			glVertex2f(a * 70 + 85, 85);
-			glVertex2f(a * 70 + 85, 715);
-		}
-		glEnd();
 	}
 	
 	private static void setUpDisplay(){
