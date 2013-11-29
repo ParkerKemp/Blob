@@ -5,7 +5,9 @@ import org.lwjgl.opengl.DisplayMode;
 import static org.lwjgl.opengl.GL11.*;
 
 public class Blob {
+	private static Player player = new Player();
 	public static void main(String[] args){
+		init();
 		setUpDisplay();
 		initOpenGL();
 		
@@ -16,13 +18,20 @@ public class Blob {
 		
 	}
 	
+	public static void init(){
+		player.init(true, false);
+		Board.init();
+		InputHandler.create();
+	}
+	
 	public static void update(){
-		
+		InputHandler.update();
+		player.update();
 	}
 	
 	public static void draw(){
 
-		//Board.draw();
+		Board.draw();
 		
 		drawPieces();
 		
@@ -30,7 +39,7 @@ public class Blob {
 	}
 
 	public static void drawPieces(){
-		
+		player.drawPieces();
 	}
 	
 	private static void setUpDisplay(){
