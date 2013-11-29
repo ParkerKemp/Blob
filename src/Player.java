@@ -4,19 +4,22 @@ import static org.lwjgl.opengl.GL11.*;
 import java.util.ArrayList;
 
 class Piece{
+	//position is the window coords for rendering, tile is the ID of the tile it's placed on
+	
 	boolean white;
 	Ivector position;
 	TileID tile;
 	
 	public Piece(boolean white, TileID tile){
-		if(!white)
-			System.out.println("fail");
 		this.white = white;
 		this.tile = tile;
 		position = tile.centerCoord();
 	}
 	
 	public void draw(){
+		//Translate to position and draw a 40x40 square
+		
+		//Set color
 		if(white)
 			glColor4f(1, 1, 1, 1);
 		else
@@ -41,14 +44,11 @@ public class Player{
 	private ArrayList<Piece> pieces = new ArrayList<Piece>();
 	
 	public void init(boolean white, boolean ai){
-		
 		this.white = white;
 		this.ai = ai;
 	}
 	
 	public void update(){
-		if(!white)
-			System.out.println("fail");
 		if(ai)
 			aiUpdate();
 		else
@@ -56,23 +56,26 @@ public class Player{
 	}
 	
 	public void aiUpdate(){
+		//This is where the minimax algorithm needs to go
 		
 	}
 	
 	public void playerUpdate(){
+		
+		//On click, try to add a piece
 		if(InputHandler.leftMouseDown())
 			tryToAddPiece();
 	}
 	
 	public void tryToAddPiece(){
+		//Try to place a piece on the board using mouse location
+		
 		Piece tempPiece;
-		if(!white)
-			System.out.println("fail");
 		tempPiece = Board.placePiece(InputHandler.mouse(), white);
-		if(tempPiece != null){
+		
+		//If tempPiece is null, then we failed to place the piece
+		if(tempPiece != null)
 			pieces.add(tempPiece);
-			System.out.println("added");
-		}
 	}
 	
 	public void drawPieces(){

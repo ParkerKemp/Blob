@@ -15,11 +15,13 @@ public class Blob {
 			update();
 			draw();
 		}
-		
 	}
 	
 	public static void init(){
+		
+		//Initialize player with white = true and AI = false
 		player.init(true, false);
+		
 		Board.init();
 		InputHandler.create();
 	}
@@ -39,6 +41,8 @@ public class Blob {
 	}
 
 	public static void drawPieces(){
+		//This function will also contain ai.drawPieces
+		
 		player.drawPieces();
 	}
 	
@@ -56,6 +60,7 @@ public class Blob {
 		glOrtho(0, 800, 0, 800, 1, -1);
 		glMatrixMode(GL_MODELVIEW);
 		
+		//Set scissor area (for drawing the board easily)
 		glScissor(85, 85, 630, 630);
 	}
 }
