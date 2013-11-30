@@ -57,6 +57,13 @@ class KeyEvent{
 
 class Ivector{
 	public int x, y;
+	
+	public Ivector() {}
+	
+	public Ivector(int x, int y) {
+		this.x = x;
+		this.y = y;
+	}
 }
 
 public class InputHandler {

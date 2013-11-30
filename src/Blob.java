@@ -20,7 +20,7 @@ public class Blob {
 	public static void init(){
 		
 		//Initialize player with white = true and AI = false
-		player.init(true, false);
+		player.init(false);
 		
 		Board.init();
 		InputHandler.create();
@@ -43,7 +43,8 @@ public class Blob {
 	public static void drawPieces(){
 		//This function will also contain ai.drawPieces
 		
-		player.drawPieces();
+		// See Player class.
+		//player.drawPieces();
 	}
 	
 	private static void setUpDisplay(){

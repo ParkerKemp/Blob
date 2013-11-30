@@ -1,37 +1,41 @@
 import static org.lwjgl.opengl.GL11.*;
 
-class TileID{
-	public int x, y;
-	
-	public Ivector centerCoord(){
-		Ivector i = new Ivector();
-		i.x = x * 90 + 130;
-		i.y = y * 90 + 130;
-		return i;
-	}
-	
-	public static TileID fromCoord(Ivector l){
-		TileID tile = new TileID();
-		tile.x = ((int)l.x - 85) / 90;
-		tile.y = ((int)l.y - 85) / 90;
-		return tile;
-	}
-}
+import java.util.ArrayList;
 
 public class Board {
 	
+	// (0, 0) is bottom left corner, (6, 6) is top right.
 	private static Piece[][] tiles = new Piece[7][7];
 
 	public static void init(){
+		// Empty game squares
 		for(int a = 0; a < 7; a++)
 			for(int b = 0; b < 7; b++)
 				tiles[a][b] = null;
+		
+		// Initialize game board with starting pieces
+		tiles[0][0] = new Piece(true, new TileID(0, 0));
+		tiles[6][6] = new Piece(true, new TileID(6, 6));
+		
+		tiles[0][6] = new Piece(false, new TileID(0, 6));
+		tiles[6][0] = new Piece(false, new TileID(6, 0));
 	}
 	
 	public static boolean onBoard(Ivector l){
-		//Checks whether the given coords are on the board
-		
+		//Checks whether the given display coords are on the board
 		return (l.x > 85 && l.x < 715) && (l.y > 85 && l.y < 715);
+	}
+	
+	public static boolean tileExists(TileID tile) {
+		// Checks if the given tile coords are not out of range
+		
+		if (null == tile)
+			return false;
+		
+		if (tile.x > 6 || tile.y > 6 || tile.x < 0 || tile.y < 0)
+			return false;
+		
+		return true;
 	}
 	
 	public static Piece placePiece(Ivector l, boolean white){
@@ -47,6 +51,10 @@ public class Board {
 		
 		//If the tile is already occupied, then fail
 		if(!tileIsEmpty(TileID.fromCoord(l)))
+			return null;
+		
+		//If the move is invalid, then fail
+		if (!moveIsValid(tile, white))
 			return null;
 
 		//If we make it this far, we're golden
@@ -64,6 +72,76 @@ public class Board {
 		//The TileID must be valid, i.e. not outside of [7][7] array bounds
 		
 		return tiles[tile.x][tile.y] == null;
+	}
+	
+
+	public static ArrayList<TileID> adjacentTiles(TileID tile) {
+		// returns tiles empty and adjacent to a given tile. Tiles are considered adjacent if immediately next to or are in a 2 square radius.
+		TileID adjacentTiles [] = {
+			new TileID(tile.x - 1, tile.y - 1),
+			new TileID(tile.x -1, tile.y),
+			new TileID(tile.x -1, tile.y + 1),
+			new TileID(tile.x, tile.y - 1),
+			new TileID(tile.x, tile.y + 1),
+			new TileID(tile.x + 1, tile.y - 1),
+			new TileID(tile.x + 1, tile.y),
+			new TileID(tile.x + 1, tile.y + 1),
+			
+			new TileID(tile.x - 2, tile.y - 2),
+			new TileID(tile.x -2, tile.y),
+			new TileID(tile.x -2, tile.y + 2),
+			new TileID(tile.x, tile.y - 2),
+			new TileID(tile.x, tile.y + 2),
+			new TileID(tile.x + 2, tile.y - 2),
+			new TileID(tile.x + 2, tile.y),
+			new TileID(tile.x + 2, tile.y + 2),
+		};
+		
+		ArrayList <TileID> openTiles = new ArrayList <TileID> ();
+		
+		for (TileID currentTile: adjacentTiles) {
+			if (tileExists(currentTile))
+				openTiles.add(currentTile);
+		}
+		
+		return openTiles;
+	}
+	
+	public static ArrayList <TileID> availableMoves(boolean isWhite) {
+		// returns all moves for white or black
+		ArrayList <TileID> availableMoves  = new ArrayList <TileID> ();
+		
+		for (Piece[] pieceArray : tiles) {
+			for (Piece piece : pieceArray) {
+				
+				if (null != piece && piece.isWhite() == isWhite) {
+					TileID currentTile = piece.getTile();
+					for (TileID openTile : adjacentTiles(currentTile)) {
+						availableMoves.add(openTile);
+					}
+				}
+					
+			}
+		}
+		return availableMoves;
+	}
+
+	public static boolean moveIsValid(TileID newMove, boolean isWhite) {
+		// returns whether or not a move is valid
+		if (!tileExists(newMove)) 
+			return false;
+		
+		ArrayList<TileID> availableMoves = availableMoves(isWhite);
+		
+		if (null == availableMoves)
+			return false;	// Special Case: No available Moves!
+		
+		for (TileID availableMove : availableMoves) {
+			if (newMove.x == availableMove.x && newMove.y == availableMove.y)
+				return true;
+		}
+		
+		return false;
 	}
 	
 	public static void draw(){
@@ -97,5 +175,12 @@ public class Board {
 		glEnd();
 		
 		glDisable(GL_SCISSOR_TEST);
+		
+		for (Piece[] pieceArray : tiles) {
+			for (Piece piece : pieceArray) {
+				if (null != piece)
+					piece.draw();
+			}
+		}
 	}
 }
