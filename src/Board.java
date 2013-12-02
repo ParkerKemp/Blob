@@ -116,11 +116,12 @@ public class Board {
 	}
 	
 	public boolean gameOver(){
-		for(int a = 0; a < 6; a++)
-			for(int b = 0; b < 6; b++)
-				if(tiles[a][b] == null)
-					return false;
-		return true;
+		//for(int a = 0; a < 6; a++)
+		//	for(int b = 0; b < 6; b++)
+		//		if(tiles[a][b] == null)
+		//			return false;
+		//return true;
+		return human.pieces.size() + ai.pieces.size() >= 49;
 	}
 	
 	public void movePiece(TileID source, TileID destination){
@@ -179,10 +180,11 @@ public class Board {
 	}
 	
 	public int evaluate(){
-		if(ai.pieces.size() == human.pieces.size())
-			return 0;
+		//if(ai.pieces.size() == human.pieces.size())
+		//	return 0;
 		
-		return ai.pieces.size() > human.pieces.size() ? 1 : -1;
+		//return ai.pieces.size() > human.pieces.size() ? 1 : -1;
+		return ai.pieces.size() - human.pieces.size();
 	}
 	
 	public void draw(){

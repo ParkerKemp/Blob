@@ -44,11 +44,18 @@ public class Player{
 	
 	protected ArrayList<Move> availableMoves(Board board){
 		ArrayList<Move> moves = new ArrayList<Move>();
+		boolean[][] adjacenceFlags = new boolean[7][7];
+		for(int a = 0; a < 7; a++)
+			for(int b = 0; b < 7; b++)
+				adjacenceFlags[a][b] = true;
 		//System.out.println("Num pieces: " + pieces.size());
 		for(Piece piece: pieces){
 			for(TileID tile: piece.tile.adjacentTiles()){
-				if(board.tileIsEmpty(tile))
-					moves.add(new Move(null, tile));
+				if(board.tileIsEmpty(tile)){
+					if(adjacenceFlags[tile.x][tile.y])
+						moves.add(new Move(null, tile));
+					adjacenceFlags[tile.x][tile.y] = false;
+				}
 			}
 		}
 		for(Piece piece: pieces){
