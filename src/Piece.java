@@ -10,21 +10,43 @@ import static org.lwjgl.opengl.GL11.glVertex2f;
 public class Piece{
 	//position is the window coords for rendering, tile is the ID of the tile it's placed on
 	
-	boolean white;
+	Color color;
 	Ivector position;
 	TileID tile;
+	Player owner;
 	
-	public Piece(boolean white, TileID tile){
-		this.white = white;
+	public Piece(TileID tile, Player owner){
+		this.color = owner.color;
 		this.tile = tile;
+		this.owner = owner;
 		position = tile.centerCoord();
+	}
+	
+	public Piece(){
+		
+	}
+	
+	public Piece deepCopy(Player owner){
+		Piece piece = new Piece();
+		
+		piece.color = color;
+		piece.position = position;
+		piece.tile = tile.deepCopy();
+		piece.owner = owner;
+		
+		return piece;
+	}
+	
+	public void setTile(TileID tile){
+		this.tile = tile;
+		this.position = tile.centerCoord();
 	}
 	
 	public void draw(){
 		//Translate to position and draw a 40x40 square
 		
 		//Set color
-		if(white)
+		if(color == Color.WHITE)
 			glColor4f(1, 1, 1, 1);
 		else
 			glColor4f(0, 0, 0, 1);
@@ -42,8 +64,8 @@ public class Piece{
 		glPopMatrix();
 	}
 	
-	public boolean isWhite() {
-		return white;
+	public Color color() {
+		return color;
 	}
 	
 	public TileID getTile() {

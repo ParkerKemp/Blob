@@ -3,47 +3,62 @@ import static org.lwjgl.opengl.GL11.*;
 
 import java.util.ArrayList;
 
-
 public class Player{
-	private boolean aiTurn;
+
+	protected ArrayList<Piece> pieces = new ArrayList<Piece>();
+	protected Color color;
 	
-	public void init(boolean aiTurn){
-		this.aiTurn = aiTurn;
+	public Player deepCopy(){
+		Player player = new Player();
+		player.color = color;
+		for(Piece piece: pieces){
+			player.pieces.add(piece.deepCopy(player));
+		}
+		return player;
 	}
 	
-	public void update(){
-		if(aiTurn)
-			aiUpdate();
-		else
-			playerUpdate();
-	}
-	
-	public void aiUpdate(){
-		//This is where the minimax algorithm needs to go
+	public Player(){
 		
 	}
 	
-	public void playerUpdate(){
-		//!!! Needs a special case for no possible moves.
-		
-		//On click, try to add a piece
-		if(InputHandler.leftMouseDown())
-			// If successful, change turns.
-			if (addPiece());
-				//aiTurn = true;
-				
+	public Player(Color color){
+		this.color = color;
 	}
 	
-	public boolean addPiece(){
+	public void init(Color color){
+		this.color = color;
+	}
+
+	public void addPiece(Board board){
 		//Try to place a piece on the board using mouse location, returns true if successful.
 		
-		Piece tempPiece;
-		tempPiece = Board.placePiece(InputHandler.mouse(), true);
+		//pieces.add(board.placePiece(InputHandler.mouse(), Color.WHITE));
 		
-		if (null != tempPiece)
-			return true;
-		else
-			return false;
+
+		
+		//if (null != tempPiece)
+		//	return true;
+		//else
+		//	return false;
+	}
+	
+	protected ArrayList<Move> availableMoves(Board board){
+		ArrayList<Move> moves = new ArrayList<Move>();
+		//System.out.println("Num pieces: " + pieces.size());
+		for(Piece piece: pieces){
+			for(TileID tile: piece.tile.adjacentTiles()){
+				if(board.tileIsEmpty(tile))
+					moves.add(new Move(null, tile));
+			}
+		}
+		for(Piece piece: pieces){
+			for(TileID tile: piece.tile.jumpTiles()){
+				if(board.tileIsEmpty(tile))
+					moves.add(new Move(piece.tile, tile));
+			}
+		}
+		//System.out.println("Num moves: " + moves.size());
+		return moves;
 	}
 	
 	// Keeping two different lists of pieces on the board to be drawn separately seems unnecessary.
