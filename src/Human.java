@@ -35,7 +35,11 @@ public class Human extends Player{
 	private void addPiece(){
 		Move move = new Move();
 		move.destination = TileID.fromCoord(InputHandler.mouse());
-		if(Board.tryMove(move, this))
-			Blob.aiTurn = true;
+			
+		for (TileID currentTile : validSpawns()) {
+			if (move.destination.x == currentTile.x && move.destination.y == currentTile.y)
+				if(Board.tryMove(move, this))
+					Blob.aiTurn = true;
+		}
 	}
 }
