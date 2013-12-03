@@ -14,4 +14,12 @@ public class Move {
 		this.source = source;
 		this.destination = destination;
 	}
+	
+	public boolean equals(Move move){
+		if(source != null && move.source != null)
+			return source.equals(move.source) && destination.equals(move.destination);
+		else if(source != null || move.source != null)
+			return false;
+		return source.equals(move.source) && destination.equals(move.destination);
+	}
 }
