@@ -31,7 +31,7 @@ public class AI extends Player{
 			Board.makeMove(move, this);
 			
 			//Run alphaBeta algorithm
-			tempValue = alphaBeta(4, -100, 100, false);
+			tempValue = miniMaxAlphaBeta(4, -100, 100, false);
 			
 			//Check if new move is worthy, or if it's the first one
 			if(tempValue >= bestValue || bestMoves.size() == 0){
@@ -53,7 +53,7 @@ public class AI extends Player{
 		return bestMoves.get(rand.nextInt(bestMoves.size()));
 	}
 	
-	private int alphaBeta(int depth, int a, int b, boolean maximize){
+	private int miniMaxAlphaBeta(int depth, int a, int b, boolean maximize){
 		//Alpha-beta pruning minimax algorithm
 		
 		//If board is full or depth limit is reached, then evaluate board
@@ -68,7 +68,7 @@ public class AI extends Player{
 				Board.makeMove(testMove, this);
 				
 				//Go deeper
-				a = Math.max(a, alphaBeta(depth - 1, a, b, false));
+				a = Math.max(a, miniMaxAlphaBeta(depth - 1, a, b, false));
 				
 				//Revert move to restore board to previous state
 				Board.revertMove(testMove);
@@ -87,7 +87,7 @@ public class AI extends Player{
 				Board.makeMove(testMove, Board.human);
 				
 				//Go deeper
-				b = Math.min(b, alphaBeta(depth - 1, a, b, true));
+				b = Math.min(b, miniMaxAlphaBeta(depth - 1, a, b, true));
 				
 				//Revert move to restore board to previous state
 				Board.revertMove(testMove);
