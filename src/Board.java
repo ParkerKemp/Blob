@@ -107,6 +107,10 @@ public class Board {
 		}
 	}
 	
+	public static Piece pieceAt(TileID tile){
+		return tiles[tile.x][tile.y];
+	}
+	
 	public static int evaluate(){
 		//Return board value from AI's perspective. Value is the difference between AI's pieces and human's pieces
 		return ai.pieces.size() - human.pieces.size();

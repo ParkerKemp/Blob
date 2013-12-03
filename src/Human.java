@@ -1,4 +1,6 @@
 public class Human extends Player{
+	private Piece grabbedPiece;
+	private boolean moving = false;
 
 	public Human(Color color){
 		this.color = color;
@@ -9,19 +11,35 @@ public class Human extends Player{
 	}
 	
 	public void update(){
-		//!!! Needs a special case for no possible moves.
-		
+		if(!moving)
+			normalState();
+		else
+			movingState();
+	}
+	
+	public void normalState(){
 		//On click, try to add a piece
-		if(InputHandler.leftMouseDown()){
-			Move move = new Move();
-			move.destination = TileID.fromCoord(InputHandler.mouse());
+		if(InputHandler.leftMouseDown())
+			if(Board.tileIsEmpty(TileID.fromCoord(InputHandler.mouse())))
+				addPiece();
+			else if((grabbedPiece = Board.pieceAt(TileID.fromCoord(InputHandler.mouse()))).owner == this)
+				moving = true;
+	}
+	
+	public void movingState(){
+		if(InputHandler.leftMouseUp())
+			moving = false;
+		grabbedPiece.position = InputHandler.mouse();
+	}
+	
+	private void addPiece(){
+		Move move = new Move();
+		move.destination = TileID.fromCoord(InputHandler.mouse());
 			
-			for (TileID currentTile : validSpawns()) {
-				if (move.destination.x == currentTile.x && move.destination.y == currentTile.y)
-					if(Board.tryMove(move, this))
-						Blob.aiTurn = true;
-			}
-			
-		}			
+		for (TileID currentTile : validSpawns()) {
+			if (move.destination.x == currentTile.x && move.destination.y == currentTile.y)
+				if(Board.tryMove(move, this))
+					Blob.aiTurn = true;
+		}
 	}
 }
