@@ -3,9 +3,13 @@ import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import static org.lwjgl.opengl.GL11.*;
+import org.newdawn.slick.TrueTypeFont;
+import org.newdawn.slick.Color;
+import java.awt.Font;
 
 public class Blob {
 	static boolean aiTurn = false;
+	static TrueTypeFont font;
 	
 	public static void main(String[] args){
 		init();
@@ -19,6 +23,7 @@ public class Blob {
 	}
 	
 	public static void init(){
+		font = new TrueTypeFont(new Font("Times New Roman", Font.BOLD, 24), false);
 		Board.init();
 		InputHandler.create();
 	}
@@ -38,6 +43,7 @@ public class Blob {
 		Board.draw();
 
 		Display.update();
+		font.drawString(100, 100, "TESTING", Color.white);
 	}
 	
 	private static void setUpDisplay(){
