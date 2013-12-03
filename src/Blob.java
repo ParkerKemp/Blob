@@ -8,6 +8,8 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.TrueTypeFont;
 import org.newdawn.slick.Color;
 
+import org.lwjgl.input.Keyboard;
+
 import java.awt.Font;
 
 public class Blob extends BasicGame {
@@ -40,8 +42,12 @@ public class Blob extends BasicGame {
 		regularFont = new TrueTypeFont(new Font("Arial", Font.PLAIN, 20), false);
 		giantFont = new TrueTypeFont(new Font("Arial", Font.BOLD, 50), false);
 		tinyFont = new TrueTypeFont(new Font("Arial", Font.PLAIN, 17), false);
+		firstLabel = "";
+		secondLabel = "";
 		Board.init();
 		InputHandler.create();
+		InputHandler.watchKey(Keyboard.KEY_A);
+		InputHandler.watchKey(Keyboard.KEY_P);
 	}
 
 	@Override
@@ -57,6 +63,25 @@ public class Blob extends BasicGame {
 			else
 				Board.human.update();
 		}
+		
+		// Press P or A to start a new game with Player or AI first.
+		if (InputHandler.keyDownEvent(Keyboard.KEY_P)) {
+			firstLabel = "";
+			secondLabel = "";
+			Board.init();
+			aiTurn = false;
+			InputHandler.create();
+			InputHandler.watchKey(Keyboard.KEY_A);
+			InputHandler.watchKey(Keyboard.KEY_P);
+		} else if (InputHandler.keyDownEvent(Keyboard.KEY_A)) {
+			firstLabel = "";
+			secondLabel = "";
+			Board.init();
+			aiTurn = true;
+			InputHandler.create();
+			InputHandler.watchKey(Keyboard.KEY_A);
+			InputHandler.watchKey(Keyboard.KEY_P);
+		}
 	}
 	
 	@Override
@@ -66,6 +91,7 @@ public class Blob extends BasicGame {
 		Board.draw(arg1);
 		
 		titleFont.drawString(400f - titleFont.getWidth("Blobs!") / 2, 25f, "Blobs!", Color.green);
+		tinyFont.drawString(400f - tinyFont.getWidth("Press P to start a new game with the Player going first, or A for the AI to go first.") / 2, 60f, "Press P to start a new game with the Player going first, or A for the AI to go first.", Color.gray);
 		
 		int playerScore = Board.human.pieces.size();
 		int computerScore = Board.ai.pieces.size();

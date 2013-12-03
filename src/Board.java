@@ -9,10 +9,14 @@ public class Board {
 	
 	// (0, 0) is bottom left corner, (6, 6) is top right.
 	private static Piece[][] tiles = new Piece[7][7];
-	public static Human human = new Human(PieceColor.WHITE);
-	public static AI ai = new AI(PieceColor.BLACK);
+	public static Human human;
+	public static AI ai; 
 
 	public static void init(){
+		
+		human = new Human(PieceColor.WHITE);
+		ai = new AI(PieceColor.BLACK);
+		
 		// Empty game squares
 		for(int a = 0; a < 7; a++)
 			for(int b = 0; b < 7; b++)
