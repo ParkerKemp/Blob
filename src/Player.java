@@ -4,13 +4,13 @@ import java.util.ArrayList;
 public class Player{
 
 	protected ArrayList<Piece> pieces = new ArrayList<Piece>();
-	protected Color color;
+	protected PieceColor color;
 	
 	public Player(){
 		
 	}
 	
-	public Player(Color color){
+	public Player(PieceColor color){
 		this.color = color;
 	}
 
@@ -27,7 +27,7 @@ public class Player{
 		
 		//Find all moves that add a piece at an adjacent tile
 		for(Piece piece: pieces)
-			for(TileID tile: piece.tile.adjacentTiles())
+			for(Tile tile: piece.tile.adjacentTiles())
 				if(Board.tileIsEmpty(tile)){
 					
 					//Check if tile is already spoken for before adding
@@ -40,17 +40,17 @@ public class Player{
 		
 		//Find all moves that jump a piece 2 spaces
 		for(Piece piece: pieces)
-			for(TileID tile: piece.tile.jumpTiles())
+			for(Tile tile: piece.tile.jumpTiles())
 				if(Board.tileIsEmpty(tile))
 					moves.add(new Move(piece.tile, tile));
 				
 		return moves;
 	}
 	
-	protected ArrayList<TileID> validSpawns(){
+	protected ArrayList<Tile> validSpawns(){
 		//Return an ArrayList of available (validated) tileIDs to spawn to
 		
-		ArrayList<TileID> spawns = new ArrayList<TileID>();
+		ArrayList<Tile> spawns = new ArrayList<Tile>();
 		boolean[][] adjacenceFlags = new boolean[7][7];
 		
 		//Set all flags to true
@@ -60,7 +60,7 @@ public class Player{
 		
 		//Find all moves that add a piece at an adjacent tile
 		for(Piece piece: pieces)
-			for(TileID tile: piece.tile.adjacentTiles())
+			for(Tile tile: piece.tile.adjacentTiles())
 				if(Board.tileIsEmpty(tile)){
 					
 					//Check if tile is already spoken for before adding
@@ -74,9 +74,9 @@ public class Player{
 		return spawns;
 	}
 	
-	protected ArrayList<TileID> validMoves() {
+	protected ArrayList<Tile> validMoves() {
 		// Returns all valid moves 
-		ArrayList <TileID> moves = new ArrayList<TileID>();
+		ArrayList <Tile> moves = new ArrayList<Tile>();
 		boolean[][] adjacenceFlags = new boolean[7][7];
 		
 		//Set all flags to true
@@ -86,7 +86,7 @@ public class Player{
 		
 		//Find all moves that jump a piece 2 spaces
 		for(Piece piece: pieces)
-			for(TileID tile: piece.tile.jumpTiles())
+			for(Tile tile: piece.tile.jumpTiles())
 				if(Board.tileIsEmpty(tile))
 					moves.add(tile);
 		

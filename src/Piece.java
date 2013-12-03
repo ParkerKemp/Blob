@@ -7,15 +7,18 @@ import static org.lwjgl.opengl.GL11.glPushMatrix;
 import static org.lwjgl.opengl.GL11.glTranslatef;
 import static org.lwjgl.opengl.GL11.glVertex2f;
 
+import org.newdawn.slick.Color;
+import org.newdawn.slick.Graphics;
+
 public class Piece{
 	//position is the window coords for rendering, tile is the ID of the tile it's placed on
 	
-	Color color;
+	PieceColor color;
 	Ivector position;
-	TileID tile;
+	Tile tile;
 	Player owner;
 	
-	public Piece(TileID tile, Player owner){
+	public Piece(Tile tile, Player owner){
 		this.color = owner.color;
 		this.tile = tile;
 		this.owner = owner;
@@ -26,38 +29,28 @@ public class Piece{
 		
 	}
 	
-	public void setTile(TileID tile){
+	public void setTile(Tile tile){
 		this.tile = tile;
 		this.position = tile.centerCoord();
 	}
 	
-	public void draw(){
+	public void draw(Graphics g){
 		//Translate to position and draw a 40x40 square
 		
 		//Set color
-		if(color == Color.WHITE)
-			glColor4f(1, 1, 1, 1);
+		if(color == PieceColor.WHITE)
+			g.setColor(Color.white);
 		else
-			glColor4f(0, 0, 0, 1);
+			g.setColor(Color.black);
 		
-		glPushMatrix();
-		
-		glTranslatef(position.x, position.y, 0);
-		glBegin(GL_TRIANGLE_STRIP);
-		glVertex2f(-20, -20);
-		glVertex2f(-20, 20);
-		glVertex2f(20, -20);
-		glVertex2f(20, 20);
-		glEnd();
-		
-		glPopMatrix();
+		g.fillRect(position.x - 20, position.y - 20, 40, 40);
 	}
 	
-	public Color color() {
+	public PieceColor color() {
 		return color;
 	}
 	
-	public TileID getTile() {
+	public Tile getTile() {
 		return tile;
 	}
 }

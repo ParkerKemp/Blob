@@ -67,7 +67,6 @@ class Ivector{
 }
 
 public class InputHandler {
-	
 	private static Set<Integer> watching = new HashSet<Integer>();
 	private static KeyEvent keyEvents[] = new KeyEvent[256];
 	private static KeyEvent leftMouseEvent = new KeyEvent();

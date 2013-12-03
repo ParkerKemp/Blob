@@ -4,7 +4,7 @@ import java.util.Random;
 public class AI extends Player{
 
 	
-	public AI(Color color){
+	public AI(PieceColor color){
 		this.color = color;
 	}
 	
@@ -17,6 +17,13 @@ public class AI extends Player{
 			
 			//Make a move
 			Board.makeMove(move, this);
+			
+			if (move.hasSource()) {
+				Blob.updateLabel("Computer moves from " + move.toString() + ".");
+			} else {
+				Blob.updateLabel("Computer spawns at " +  move.toString() + ".");
+			}
+			
 		}
 	}
 	

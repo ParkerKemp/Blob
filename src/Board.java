@@ -1,15 +1,16 @@
-import static org.lwjgl.opengl.GL11.*;
-
+import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Color;
+import org.newdawn.slick.TrueTypeFont;
 import java.util.ArrayList;
 
-enum Color{WHITE, BLACK};
+enum PieceColor{WHITE, BLACK};
 
 public class Board {
 	
 	// (0, 0) is bottom left corner, (6, 6) is top right.
 	private static Piece[][] tiles = new Piece[7][7];
-	public static Human human = new Human(Color.WHITE);
-	public static AI ai = new AI(Color.BLACK);
+	public static Human human = new Human(PieceColor.WHITE);
+	public static AI ai = new AI(PieceColor.BLACK);
 
 	public static void init(){
 		// Empty game squares
@@ -18,11 +19,11 @@ public class Board {
 				tiles[a][b] = null;
 		
 		//Add initial pieces
-		addPiece(new TileID(0, 0), human);
-		addPiece(new TileID(6, 6), human);
+		addPiece(new Tile(0, 0), human);
+		addPiece(new Tile(6, 6), human);
 		
-		addPiece(new TileID(0, 6), ai);
-		addPiece(new TileID(6, 0), ai);
+		addPiece(new Tile(0, 6), ai);
+		addPiece(new Tile(6, 0), ai);
 	}
 	
 	public static boolean onBoard(Ivector l){
@@ -30,7 +31,7 @@ public class Board {
 		return (l.x > 85 && l.x < 715) && (l.y > 85 && l.y < 715);
 	}
 	
-	public static boolean tileExists(TileID tile) {
+	public static boolean tileExists(Tile tile) {
 		// Checks if the given tile coords are not out of range
 		
 		if (null == tile)
@@ -43,6 +44,7 @@ public class Board {
 	}
 	
 	public static boolean tryMove(Move move, Player player){
+		// return false if move cannot be made
 		if(!tileExists(move.destination))
 			return false;
 		
@@ -57,11 +59,11 @@ public class Board {
 	}
 
 	
-	public static boolean tileIsEmpty(TileID tile){
+	public static boolean tileIsEmpty(Tile tile){
 		//Checks whether a tile is occupied or not.
 		//The TileID must be valid, i.e. not outside of [7][7] array bounds
 		
-		return tiles[tile.x][tile.y] == null;
+		return null == tiles[tile.x][tile.y];
 	}
 	
 	public static boolean gameOver(){
@@ -70,7 +72,7 @@ public class Board {
 		return human.pieces.size() + ai.pieces.size() >= 49;
 	}
 	
-	public static void movePiece(TileID source, TileID destination){
+	public static void movePiece(Tile source, Tile destination){
 		//Move a piece from source tile to destination tile (move must be validated already)
 		
 		tiles[destination.x][destination.y] = tiles[source.x][source.y];
@@ -78,7 +80,7 @@ public class Board {
 		tiles[destination.x][destination.y].setTile(destination); 
 	}
 	
-	public static void addPiece(TileID destination, Player player){
+	public static void addPiece(Tile destination, Player player){
 		//Add a piece to destination tile belonging to the given player
 		
 		player.pieces.add(tiles[destination.x][destination.y] = new Piece(destination, player));
@@ -107,7 +109,7 @@ public class Board {
 		}
 	}
 	
-	public static Piece pieceAt(TileID tile){
+	public static Piece pieceAt(Tile tile){
 		return tiles[tile.x][tile.y];
 	}
 	
@@ -116,48 +118,55 @@ public class Board {
 		return ai.pieces.size() - human.pieces.size();
 	}
 	
-	public static void draw(){
+	public static void draw(Graphics g){
+		
 		//Draw the board
-		
-		//Clear whole screen as black
-		glClearColor(0, 0, 0, 1);
-		glClear(GL_COLOR_BUFFER_BIT);
-		
-
-		glEnable(GL_SCISSOR_TEST);
-
-		//Clear scissored area as green
-		glClearColor(0, 1, 0, 1);
-		glClear(GL_COLOR_BUFFER_BIT);
+		g.setColor(Color.green);
+		g.fillRect(85, 85, 630, 630);
 		
 		//Draw grid
-		glColor4f(0, 0, 0, 1);
-		glBegin(GL_LINES);
+		g.setColor(Color.black);
 		
 		for(int a = 0; a < 8; a++){
-			
 			//Horizontal
-			glVertex2f(85, a * 90 + 85);
-			glVertex2f(715, a * 90 + 85);
+			g.drawLine(85, a * 90 + 85, 715, a * 90 + 85);
 			
 			//Vertical
-			glVertex2f(a * 90 + 85, 85);
-			glVertex2f(a * 90 + 85, 715);
+			g.drawLine(a * 90 + 85, 85, a * 90 + 85, 715);
 		}
-		glEnd();
 		
-		glDisable(GL_SCISSOR_TEST);
+		//Draw Labels.
+		for(int x = 0; x < 7; x ++) {
+			Blob.regularFont.drawString(85 + 85/2 + x * 90 - Blob.regularFont.getWidth("" + Util.toChar(x)) / 2, 720f, "" + Util.toChar(x), Color.white);
+		}
+		for(int y = 0; y < 7; y ++) {
+			Blob.regularFont.drawString(70 - Blob.regularFont.getWidth("" + y) / 2, 85 + 85/2 + y * 90, "" + y, Color.white);
+		}
+		// Draw spawns or moves.
+		if (!human.isMoving())
+			for (Tile tile : human.validSpawns())
+				tile.draw(g, false);
+		else {
+			Tile sourceTile = human.getGrabbedPiece().getTile();
+			boolean drawTile;
+			for (Tile tile : sourceTile.jumpTiles()) {
+				drawTile = false;
+				
+				for(Tile unoccupied : human.validMoves())
+					if (tile.equals(unoccupied))
+						drawTile = true;
+				
+				if (drawTile)
+					tile.draw(g, true);
+			}
+		}
 		
 		//Draw all pieces onto the game board
-		for (TileID tile : human.validSpawns()) {
-			tile.draw();
-		}
-		
 		for (Piece[] pieceArray : tiles) {
 			for (Piece piece : pieceArray) {
 				
 				if (null != piece) 
-					piece.draw();
+					piece.draw(g);
 				
 			}
 		}
