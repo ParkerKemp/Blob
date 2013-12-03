@@ -34,9 +34,7 @@ public class Blob {
 	}
 	
 	public static void draw(){
-
 		Board.draw();
-
 		Display.update();
 	}
 	
