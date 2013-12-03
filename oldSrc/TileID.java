@@ -1,14 +1,3 @@
-import static org.lwjgl.opengl.GL11.GL_LINES;
-import static org.lwjgl.opengl.GL11.GL_TRIANGLES;
-import static org.lwjgl.opengl.GL11.glBegin;
-import static org.lwjgl.opengl.GL11.glColor3f;
-import static org.lwjgl.opengl.GL11.glEnd;
-import static org.lwjgl.opengl.GL11.glLineWidth;
-import static org.lwjgl.opengl.GL11.glPopMatrix;
-import static org.lwjgl.opengl.GL11.glPushMatrix;
-import static org.lwjgl.opengl.GL11.glTranslatef;
-import static org.lwjgl.opengl.GL11.glVertex2f;
-
 import java.util.ArrayList;
 
 class TileID{
@@ -22,7 +11,11 @@ class TileID{
 	}
 	
 	public TileID () {}
-
+	
+	public TileID deepCopy(){
+		return new TileID(x, y);
+	}
+	
 	public Ivector centerCoord(){
 		Ivector i = new Ivector();
 		i.x = x * 90 + 130;
@@ -83,53 +76,6 @@ class TileID{
 		//System.out.println("Jump tiles: " + tiles.size());
 		
 		return tiles;
-	}
-	
-	public void draw() {
-		// draw the tile (for predicted moves)
-		Ivector drawCoordinates = centerCoord();
-		
-		// Translate drawing matrix
-		glPushMatrix();
-		glTranslatef(drawCoordinates.x, drawCoordinates.y, 0);
-		
-		// draw light green fill
-		glColor3f(.5f, 1f, .5f);
-		glBegin(GL_TRIANGLES);
-		
-		glVertex2f(-45, -45);
-		glVertex2f(-45, 45);
-		glVertex2f(45, 45);
-		
-		glVertex2f(45, 45);
-		glVertex2f(45, -45);
-		glVertex2f(-45, -45);
-		
-		glEnd();
-		
-		// Draw light blue outline
-		glColor3f(.2f, .2f, 1f);
-		glLineWidth(2f);
-		
-		glBegin(GL_LINES);
-		
-		glVertex2f(-45, -45);
-		glVertex2f(45, -45);
-		
-		glVertex2f(45, -45);
-		glVertex2f(45, 45);
-		
-		glVertex2f(45, 45);
-		glVertex2f(-45, 45);
-		
-		glVertex2f(-45, 45);
-		glVertex2f(-45, -45);
-		
-		glEnd();
-		glLineWidth(1f);
-		
-		
-		glPopMatrix();
 	}
 	
 	public String toString() {

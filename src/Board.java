@@ -1,5 +1,7 @@
 import static org.lwjgl.opengl.GL11.*;
 
+import java.util.ArrayList;
+
 enum Color{WHITE, BLACK};
 
 public class Board {
@@ -53,6 +55,7 @@ public class Board {
 		makeMove(move, player);
 		return true;
 	}
+
 	
 	public static boolean tileIsEmpty(TileID tile){
 		//Checks whether a tile is occupied or not.
@@ -141,11 +144,32 @@ public class Board {
 		
 		glDisable(GL_SCISSOR_TEST);
 		
+		//Draw all pieces onto the game board
+		ArrayList <TileID> spawnTiles = new ArrayList<TileID>();
+		ArrayList <Piece> pieces = new ArrayList<Piece>();
+		
 		for (Piece[] pieceArray : tiles) {
 			for (Piece piece : pieceArray) {
-				if (null != piece)
-					piece.draw();
+				
+				if (null != piece) {
+					if (piece.color() == Color.WHITE) {
+						for (TileID tile : piece.getTile().adjacentTiles()) {
+							// Fix this so it doesn't redraw under player pieces
+							spawnTiles.add(tile);
+						}
+					}
+					pieces.add(piece);
+				}
+					
 			}
+		}
+		
+		for (TileID tile : spawnTiles) {
+			tile.draw();
+		}
+		
+		for (Piece piece : pieces) {
+			piece.draw();
 		}
 	}
 }
