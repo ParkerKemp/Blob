@@ -1,5 +1,8 @@
 
 public class Move {
+	//Stores data representing a move. If source tile is null, then it's an "add" move (using destination tile)
+	//Otherwise, it's a "jump" move from source to destination
+	
 	public TileID source, destination;
 	public int value;
 	
@@ -7,19 +10,6 @@ public class Move {
 		source = null;
 		destination = null;
 		value = 0;
-	}
-	
-	public Move deepCopy(){
-		Move move = new Move();
-		if(source != null)
-			move.source = source.deepCopy();
-		else
-			move.source = null;
-		
-		if(destination != null)
-			move.destination = destination.deepCopy();
-		else move.destination = null;
-		return move;
 	}
 	
 	public Move(TileID source, TileID destination){

@@ -26,17 +26,6 @@ public class Piece{
 		
 	}
 	
-	public Piece deepCopy(Player owner){
-		Piece piece = new Piece();
-		
-		piece.color = color;
-		piece.position = position;
-		piece.tile = tile.deepCopy();
-		piece.owner = owner;
-		
-		return piece;
-	}
-	
 	public void setTile(TileID tile){
 		this.tile = tile;
 		this.position = tile.centerCoord();

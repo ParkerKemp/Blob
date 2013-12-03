@@ -8,116 +8,94 @@ public class AI extends Player{
 		this.color = color;
 	}
 	
-	public void update(Board board){
-		Move move = pickMove(board);
-		//System.out.println("Final move is at " + move.destination.x + " " + move.destination.y);
-		board.makeMove(move, this);
+	public void update(){
+		//Unlike a normal update() function, this is not incremental
+		
+		//Pick the best move (or one of them)
+		Move move = pickMove();
+		
+		//Make a move
+		Board.makeMove(move, this);
 	}
 	
-	private Move pickMove(Board board){
+	private Move pickMove(){
+		//Use alpha-beta minimax to find one of the best moves to make
+		
 		ArrayList<Move> bestMoves = new ArrayList<Move>();
 		Random rand = new Random();
-		//Move bestMove = null;
 		int tempValue, bestValue = -100;
-		for(Move move: availableMoves(board)){
-			board.makeMove(move, this);
-			//tempValue = minimax(board, 0, true);
-			tempValue = alphaBeta(board, 0, -100, 100, true);
+		
+		for(Move move: availableMoves()){
+			
+			//Try a move
+			Board.makeMove(move, this);
+			
+			//Run alphaBeta algorithm
+			tempValue = alphaBeta(4, -100, 100, false);
+			
+			//Check if new move is worthy, or if it's the first one
 			if(tempValue >= bestValue || bestMoves.size() == 0){
+				
+				//If new move is of higher value, then reset list of moves
+				//If not, then it's equal value, so keep list
 				if(tempValue > bestValue)
 					bestMoves.clear();
+				
 				bestMoves.add(move);
 				bestValue = tempValue;
 			}
 			
-			board.revertMove(move);
+			//Reverse move to restore board to normal state
+			Board.revertMove(move);
 		}
 		
+		//bestMoves contains all the best moves (equal value), so pick one randomly
 		return bestMoves.get(rand.nextInt(bestMoves.size()));
 	}
 	
-	private int minimax(Board board, int depth, boolean maximize){
-		int temp, bestValue;
-		if(board.gameOver() || depth >= 4)
-			return board.evaluate();
+	private int alphaBeta(int depth, int a, int b, boolean maximize){
+		//Alpha-beta pruning minimax algorithm
 		
-		if(maximize){
-			bestValue = -100;
-			for(Move testMove: availableMoves(board)){
-				board.makeMove(testMove, this);
-				if(bestValue < (temp = minimax(board, depth + 1, false)))
-					bestValue = temp;
-				
-				board.revertMove(testMove);
-			}
-		}
-		else{
-			bestValue = 100;
-			for(Move testMove: availableMoves(board)){
-				board.makeMove(testMove, this);
-				if(bestValue > (temp = minimax(board, depth + 1, true)))
-					bestValue = temp;
-				
-				board.revertMove(testMove);
-			}
-		}
-		return bestValue;
-	}
-
-	private int alphaBeta(Board board, int depth, int a, int b, boolean maximize){
-		int temp, bestValue;
-		if(board.gameOver() || depth >= 4)
-			return board.evaluate();
+		//If board is full or depth limit is reached, then evaluate board
+		if(Board.gameOver() || depth == 0)
+			return Board.evaluate();
 		
+		//Maximize player
 		if(maximize){
-			for(Move testMove: availableMoves(board)){
-				board.makeMove(testMove, this);
-				a = Math.max(a, alphaBeta(board, depth + 1, a, b, false));
-				board.revertMove(testMove);
+			for(Move testMove: availableMoves()){
+				
+				//Try a move
+				Board.makeMove(testMove, this);
+				
+				//Go deeper
+				a = Math.max(a, alphaBeta(depth - 1, a, b, false));
+				
+				//Revert move to restore board to previous state
+				Board.revertMove(testMove);
+				
 				if(b <= a)
 					break;
 			}
 			return a;
 		}
+		
+		//Minimize player
 		else{
-			for(Move testMove: availableMoves(board)){
-				board.makeMove(testMove, this);
-				b = Math.min(b, alphaBeta(board, depth + 1, a, b, true));
-				//if(bestValue > (temp = minimax(board, depth + 1, true)))
-				//	bestValue = temp;
-				board.revertMove(testMove);
+			for(Move testMove: Board.human.availableMoves()){
+				
+				//Try a move
+				Board.makeMove(testMove, Board.human);
+				
+				//Go deeper
+				b = Math.min(b, alphaBeta(depth - 1, a, b, true));
+				
+				//Revert move to restore board to previous state
+				Board.revertMove(testMove);
+				
 				if (b <= a)
 					break;
 			}
 			return b;
 		}
-	}
-	
-	private int maxMove(Board board, int depth){
-		int temp, bestValue = -100;
-		if(board.gameOver() || depth >= 2)
-			return board.evaluate();
-		
-		for(Move testMove: availableMoves(board)){
-			board.makeMove(testMove, this);
-			if(bestValue < (temp = minMove(board, depth + 1)))
-				bestValue = temp;
-			
-			board.revertMove(testMove);
-		}
-		return bestValue;
-	}
-	
-	private int minMove(Board board, int depth){
-		int temp, bestValue = 100;
-		
-		for(Move testMove: board.human.availableMoves(board)){
-			board.makeMove(testMove, board.human);
-			if(bestValue > (temp = maxMove(board, depth + 1)))
-				bestValue = temp;
-
-			board.revertMove(testMove);
-		}
-		return bestValue;
 	}
 }

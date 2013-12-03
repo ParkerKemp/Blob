@@ -11,11 +11,7 @@ class TileID{
 	}
 	
 	public TileID () {}
-	
-	public TileID deepCopy(){
-		return new TileID(x, y);
-	}
-	
+
 	public Ivector centerCoord(){
 		Ivector i = new Ivector();
 		i.x = x * 90 + 130;

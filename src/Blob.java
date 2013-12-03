@@ -5,9 +5,7 @@ import org.lwjgl.opengl.DisplayMode;
 import static org.lwjgl.opengl.GL11.*;
 
 public class Blob {
-	//private static Human player = new Human();
-	private static Board board = new Board();
-	static int i = 0;
+	//private static Board board = new Board();
 	static boolean aiTurn = false;
 	
 	public static void main(String[] args){
@@ -22,42 +20,25 @@ public class Blob {
 	}
 	
 	public static void init(){
-		
-		//Initialize player with white = true and AI = false
-		//player.init();
-		//board.human.init(Color.WHITE);
-		//board.ai.init(Color.BLACK);
-		
-		board.init();
+		Board.init();
 		InputHandler.create();
-		
-		
 	}
 	
 	public static void update(){
 		InputHandler.update();
 		if(aiTurn){
-			board.ai.update(board);
+			Board.ai.update();
 			aiTurn = false;
 		}
 		else
-			board.human.update(board);
+			Board.human.update();
 	}
 	
 	public static void draw(){
 
-		board.draw();
-		
-		drawPieces();
-		
-		Display.update();
-	}
+		Board.draw();
 
-	public static void drawPieces(){
-		//This function will also contain ai.drawPieces
-		
-		// See Player class.
-		//player.drawPieces();
+		Display.update();
 	}
 	
 	private static void setUpDisplay(){
