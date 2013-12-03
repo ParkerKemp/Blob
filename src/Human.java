@@ -11,6 +11,9 @@ public class Human extends Player{
 	}
 	
 	public void update(){
+		if (availableMoves().size() == 0)
+			Blob.aiTurn = true;
+		
 		if(!moving)
 			normalState();
 		else

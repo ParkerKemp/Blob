@@ -23,7 +23,7 @@ public class Blob {
 	}
 	
 	public static void init(){
-		font = new TrueTypeFont(new Font("Times New Roman", Font.BOLD, 24), false);
+		//font = new TrueTypeFont(new Font("Times New Roman", Font.BOLD, 24), false);
 		Board.init();
 		InputHandler.create();
 	}
@@ -43,7 +43,7 @@ public class Blob {
 		Board.draw();
 
 		Display.update();
-		font.drawString(100, 100, "TESTING", Color.white);
+		//font.drawString(100, 100, "TESTING", Color.white);
 	}
 	
 	private static void setUpDisplay(){

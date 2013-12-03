@@ -11,11 +11,13 @@ public class AI extends Player{
 	public void update(){
 		//Unlike a normal update() function, this is not incremental
 		
-		//Pick the best move (or one of them)
-		Move move = pickMove();
-		
-		//Make a move
-		Board.makeMove(move, this);
+		if (availableMoves().size() > 0) {
+			//Pick the best move (or one of them)
+			Move move = pickMove();
+			
+			//Make a move
+			Board.makeMove(move, this);
+		}
 	}
 	
 	private Move pickMove(){
