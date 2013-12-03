@@ -5,7 +5,6 @@ import org.lwjgl.opengl.DisplayMode;
 import static org.lwjgl.opengl.GL11.*;
 
 public class Blob {
-	//private static Board board = new Board();
 	static boolean aiTurn = false;
 	
 	public static void main(String[] args){
@@ -45,7 +44,7 @@ public class Blob {
 		try {
 			Display.setDisplayMode(new DisplayMode(800, 800));
 			Display.create();
-		} catch (LWJGLException e) {
+		} catch (LWJGLException e){
 			e.printStackTrace();
 		}
 	}
