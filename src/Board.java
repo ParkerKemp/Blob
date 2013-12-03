@@ -145,31 +145,18 @@ public class Board {
 		glDisable(GL_SCISSOR_TEST);
 		
 		//Draw all pieces onto the game board
-		ArrayList <TileID> spawnTiles = new ArrayList<TileID>();
-		ArrayList <Piece> pieces = new ArrayList<Piece>();
+		for (TileID tile : human.validSpawns()) {
+			tile.draw();
+		}
 		
 		for (Piece[] pieceArray : tiles) {
 			for (Piece piece : pieceArray) {
 				
-				if (null != piece) {
-					if (piece.color() == Color.WHITE) {
-						for (TileID tile : piece.getTile().adjacentTiles()) {
-							// Fix this so it doesn't redraw under player pieces
-							spawnTiles.add(tile);
-						}
-					}
-					pieces.add(piece);
-				}
-					
+				if (null != piece) 
+					piece.draw();
+				
 			}
 		}
-		
-		for (TileID tile : spawnTiles) {
-			tile.draw();
-		}
-		
-		for (Piece piece : pieces) {
-			piece.draw();
-		}
-	}
+	
+	}	
 }
