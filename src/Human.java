@@ -27,9 +27,29 @@ public class Human extends Player{
 	}
 	
 	public void movingState(){
-		if(InputHandler.leftMouseUp())
-			moving = false;
 		grabbedPiece.position = InputHandler.mouse();
+		
+		if(InputHandler.leftMouseUp()){
+			movePiece();
+			moving = false;
+			grabbedPiece.position = grabbedPiece.tile.centerCoord();
+		}
+	}
+	
+	private void movePiece(){
+		Move move = new Move();
+		move.destination = TileID.fromCoord(InputHandler.mouse());
+		move.source = grabbedPiece.tile;
+		if(validJump(move))
+			if(Board.tryMove(move, this))
+				Blob.aiTurn = true;
+	}
+	
+	private boolean validJump(Move move){
+		for(Move testMove: availableMoves())
+			if(move.equals(testMove))
+				return true;
+		return false;
 	}
 	
 	private void addPiece(){

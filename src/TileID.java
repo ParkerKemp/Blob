@@ -22,6 +22,10 @@ class TileID{
 	}
 	
 	public TileID () {}
+	
+	public boolean equals(TileID tile){
+		return x == tile.x && y == tile.y;
+	}
 
 	public Ivector centerCoord(){
 		Ivector i = new Ivector();
