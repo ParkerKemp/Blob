@@ -39,9 +39,7 @@ public class Blob {
 	}
 	
 	public static void draw(){
-
 		Board.draw();
-
 		Display.update();
 		//font.drawString(100, 100, "TESTING", Color.white);
 	}
